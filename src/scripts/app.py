@@ -1,11 +1,7 @@
 import streamlit as st
 
 # Page configuration
-st.set_page_config(
-    page_title="My Streamlit App",
-    page_icon="🚀",
-    layout="wide"
-)
+st.set_page_config(page_title="My Streamlit App", page_icon="🚀", layout="wide")
 
 # Title
 st.title("🚀 My First Streamlit App")
@@ -34,10 +30,7 @@ if st.button("Click me"):
 # Example table
 st.subheader("Sample Data")
 
-data = {
-    "Name": ["Alice", "Bob", "Charlie"],
-    "Score": [85, 92, 78]
-}
+data = {"Name": ["Alice", "Bob", "Charlie"], "Score": [85, 92, 78]}
 
 st.table(data)
 
