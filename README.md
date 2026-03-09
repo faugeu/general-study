@@ -3,7 +3,7 @@
 Project created with MLOps-Template cookiecutter. For more info: https://mlopsstudygroup.github.io/mlops-guide/
 
 
-## 📋 Ininitialization
+## 📋 Initialization
 ```
 cookiecutter https://github.com/mlops-guide/mlops-template.git
 uv init
@@ -71,3 +71,22 @@ Reproduces the pipeline using DVC
 ```
 dvc repro
 ```
+
+### AHP-TOPSIS Pipeline (Fuzzy AHP + TOPSIS)
+
+The pipeline requires a JSON file with your criteria and subcriteria comparisons. Run from the project root:
+
+```bash
+python src/scripts/run_ahp_pipeline.py --payload-file data/ahp_payload_example.json
+```
+
+Optional: `--results-dir` (default `results`).
+
+Outputs are written to `results/` (default):
+
+- `ahp_topsis_ranking.csv` – Investment alternatives ranking (TOPSIS closeness)
+- `ahp_topsis_consistency.csv` – AHP consistency report (CR) per node
+- `ahp_topsis_global_weights.csv` – Global weights by sub-criterion
+- `ahp_topsis_summary.json` – Summary (top alternative, closeness score)
+
+Create your JSON with pair keys in the form `"A | B"` (e.g. `"Financial security | Profitability": 3`). See the example in `data/ahp_payload_example.json`. Criterion and subcriterion names must match those in `src/scripts/ahp_topsis/constants.py`.

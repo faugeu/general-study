@@ -1,0 +1,35 @@
+{
+  "criteria_comparisons": {
+    "Financial security | Personal characteristics": 5,
+    "Financial security | Profitability": 3,
+    "Financial security | Readiness": 4,
+    "Personal characteristics | Profitability": 0.5,
+    "Personal characteristics | Readiness": 2,
+    "Profitability | Readiness": 3
+  },
+  "subcriteria_comparisons": {
+    "Financial security": {
+      "Availability | Information": 2,
+      "Availability | Simplicity": 3,
+      "Availability | Stability": 0.25,
+      "Information | Simplicity": 2,
+      "Information | Stability": 0.2,
+      "Simplicity | Stability": 0.16666666666666666
+    },
+    "Personal characteristics": {
+      "Ability to save money | Financial priorities": 0.5,
+      "Ability to save money | Level of income": 0.3333333333333333,
+      "Financial priorities | Level of income": 2
+    },
+    "Profitability": {
+      "Liquidity | Return": 0.3333333333333333,
+      "Liquidity | Volatility": 3,
+      "Return | Volatility": 5
+    },
+    "Readiness": {
+      "Experience | Financial education": 0.5,
+      "Experience | Risk attitude": 0.3333333333333333,
+      "Financial education | Risk attitude": 2
+    }
+  }
+}
