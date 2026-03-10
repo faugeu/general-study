@@ -3,7 +3,7 @@
 Project created with MLOps-Template cookiecutter. For more info: https://mlopsstudygroup.github.io/mlops-guide/
 
 
-## 📋 Ininitialization
+## 📋 Initialization
 ```
 cookiecutter https://github.com/mlops-guide/mlops-template.git
 uv init
@@ -57,4 +57,17 @@ $ git commit -m "Example commit"
 
 black....................................................................Passed
 pytest-check.............................................................Passed
+```
+
+
+### ⚗️ Using DVC
+
+Download data from the DVC repository(analog to ```git pull```)
+```
+dvc pull
+```
+
+Reproduces the pipeline using DVC
+```
+dvc repro
 ```
