@@ -14,7 +14,7 @@ python3 -m venv .venv
 uv sync
 source .venv/bin/activate
 streamlit run src/scripts/app.py
-uv add streamlit
+pre-commit install
 ```
 
 
@@ -57,17 +57,4 @@ $ git commit -m "Example commit"
 
 black....................................................................Passed
 pytest-check.............................................................Passed
-```
-
-
-### ⚗️ Using DVC
-
-Download data from the DVC repository(analog to ```git pull```)
-```
-dvc pull
-```
-
-Reproduces the pipeline using DVC
-```
-dvc repro
 ```
