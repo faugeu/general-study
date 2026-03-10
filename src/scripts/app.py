@@ -382,8 +382,8 @@ elif st.session_state.page == 1:
     )
     st.markdown(
         '<div class="matrix-desc">'
-        "Having in mind the goal: How to save the inherited 1 billion USD, "
-        "select the criteria that you find more important and indicate "
+        "Having in mind the goal: "
+        "Select the criteria that you find more important and indicate "
         "how much more. "
         "If both criterions are equally important, select 1."
         "</div>",
