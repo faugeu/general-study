@@ -105,8 +105,9 @@ def render_results_page() -> None:
     # so results always reflect the current user inputs.
     mc_params = {
         "time_horizon": time_horizon,
-        "monthly_savings": monthly_savings,
         "initial_wealth": initial_wealth,
+        "monthly_income": monthly_income,
+        "monthly_spending": monthly_spending,
     }
 
     if _mc_params_changed(mc_params):
@@ -116,8 +117,9 @@ def render_results_page() -> None:
         with st.spinner("Running Monte Carlo simulations…"):
             st.session_state[_MC_CACHE_KEY] = run_all_simulations(
                 time_horizon=time_horizon,
-                monthly_savings=monthly_savings,
                 initial_wealth=initial_wealth,
+                monthly_income=monthly_income,
+                monthly_spending=monthly_spending,
             )
         # Save snapshot so we can detect future changes
         st.session_state[_MC_PARAMS_KEY] = mc_params

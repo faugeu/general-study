@@ -176,14 +176,16 @@ def render_monte_carlo_tab(
     color = ALT_COLORS[alt]
     finals = result["finals"]
     n = len(finals)
+    p10 = float(np.percentile(finals, 10))
     p50 = float(np.percentile(finals, 50))
     p90 = float(np.percentile(finals, 90))
     success_pct = float((finals >= goal).sum() / n * 100) if goal > 0 else 0.0
 
-    m1, m2, m3 = st.columns(3)
-    m1.metric("Median Terminal Wealth", f"{fmt(p50)} USD")
-    m2.metric("P90 Terminal Wealth", f"{fmt(p90)} USD")
-    m3.metric("Probability >= Goal", f"{success_pct:.1f}%")
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("P10 Terminal Wealth", f"{fmt(p10)} USD")
+    m2.metric("Median Terminal Wealth", f"{fmt(p50)} USD")
+    m3.metric("P90 Terminal Wealth", f"{fmt(p90)} USD")
+    m4.metric("Probability >= Goal", f"{success_pct:.1f}%")
 
     st.markdown(
         f'<div style="font-size:14px;font-weight:600;color:{color};'

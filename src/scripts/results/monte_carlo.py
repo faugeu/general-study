@@ -4,56 +4,84 @@ import numpy as np
 
 from results.constants import ALT_PARAMS, ALTERNATIVES, N_SIMS
 
-
-def run_monte_carlo(
-    T: int,
-    monthly_savings: float,
-    initial_wealth: float,
-    annual_r: float,
-    annual_v: float,
-    n: int = N_SIMS,
-) -> dict:
-    """
-    Run n Monte Carlo paths.
-    Returns dict with keys: runs, median, q10, q90, finals.
-    """
-    mr = annual_r / 12.0
-    mv = annual_v / np.sqrt(12.0)
-
-    rng = np.random.default_rng()
-    # Shape: (n, T)
-    noise = rng.standard_normal((n, T))
-    monthly_ret = 1.0 + mr + mv * noise  # (n, T)
-
-    # Vectorised path calculation
-    portfolio = np.empty((n, T))
-    pf = np.full(n, initial_wealth, dtype=float)
-    for t in range(T):
-        pf = pf * monthly_ret[:, t] + monthly_savings
-        portfolio[:, t] = pf
-
-    return {
-        "runs": portfolio,
-        "median": np.median(portfolio, axis=0),
-        "q10": np.percentile(portfolio, 10, axis=0),
-        "q90": np.percentile(portfolio, 90, axis=0),
-        "finals": portfolio[:, -1],
-    }
+from monte_carlo_sim.config import IncomeParams, ExpenseParams, AssetParams, SimParams
+from monte_carlo_sim.simulation.monte_carlo import run_monte_carlo
 
 
 def run_all_simulations(
     time_horizon: int,
-    monthly_savings: float,
     initial_wealth: float,
+    monthly_income: float,
+    monthly_spending: float,
 ) -> dict[str, dict]:
-    """Run simulations for all alternatives. Returns {alt_name: result}."""
-    return {
-        alt: run_monte_carlo(
-            T=time_horizon,
-            monthly_savings=monthly_savings,
-            initial_wealth=initial_wealth,
-            annual_r=ALT_PARAMS[alt]["r"],
-            annual_v=ALT_PARAMS[alt]["v"],
-        )
-        for alt in ALTERNATIVES
+
+    income = IncomeParams(
+        y0=monthly_income,
+        rho=0.75,
+        sigma_perm=0.07,
+        sigma_trans=0.06,
+        g_nominal_annual=0.05,
+    )
+
+    expense = ExpenseParams(
+        e0=monthly_spending,
+        p_shock=0.05,
+        mu_shock_log=np.log(1.5),
+        sigma_shock_log=0.8,
+    )
+
+    sim = SimParams(
+        W0=initial_wealth,
+        i_annual=0.02,
+        tau=0.0,
+        months=time_horizon,
+        seed=12345,
+    )
+
+    asset_configs = {
+        "Bank Deposits": AssetParams(
+            mu_nominal=np.array([0.0395]),
+            sigma_nominal=np.array([0.0057]),
+            weights=np.array([1.0]),
+        ),
+        "Stocks": AssetParams(
+            mu_nominal=np.array([0.0612]),
+            sigma_nominal=np.array([0.1542]),
+            weights=np.array([1.0]),
+        ),
+        "Mutual Funds": AssetParams(
+            mu_nominal=np.array([0.0552]),
+            sigma_nominal=np.array([0.0949]),
+            weights=np.array([1.0]),
+        ),
+        "Real Estate & Commodities": AssetParams(
+            mu_nominal=np.array([0.0482]),
+            sigma_nominal=np.array([0.1568]),
+            weights=np.array([1.0]),
+        ),
     }
+
+    results = {}
+
+    for name, asset_params in asset_configs.items():
+
+        sim_result = run_monte_carlo(
+            n_paths=1000,
+            income_params=income,
+            expense_params=expense,
+            asset_params=asset_params,
+            sim_params=sim,
+            use_income_model="deaton",
+        )
+
+        W_all = sim_result["W_all"]
+
+        results[name] = {
+            "runs": W_all,
+            "median": np.median(W_all, axis=0),
+            "q10": np.percentile(W_all, 10, axis=0),
+            "q90": np.percentile(W_all, 90, axis=0),
+            "finals": W_all[:, -1],
+        }
+
+    return results
