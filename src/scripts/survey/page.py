@@ -63,7 +63,7 @@ def render_survey_page() -> None:
 
         if invalid:
             st.error(
-                "Your comparisons are inconsistent (CI > 0.1).\n\n"
+                "Your comparisons are inconsistent (CR > 0.1).\n\n"
                 f"Please review the following matrices:\n\n" + ", ".join(invalid)
             )
             return
