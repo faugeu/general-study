@@ -67,7 +67,7 @@ def build_run_chart(
                 x=months,
                 y=run.tolist(),
                 mode="lines",
-                line={"color": "rgba(180,180,180,0.15)", "width": 0.6},
+                line={"color": "rgba(150,150,150,0.15)", "width": 0.6},
                 showlegend=False,
                 hoverinfo="skip",
             )
