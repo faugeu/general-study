@@ -1,5 +1,5 @@
 # results/ahp.py
-from typing import Dict, Tuple, Any
+from typing import Dict, Tuple, Any, Optional
 
 import pandas as pd
 
@@ -59,21 +59,26 @@ def compute_criteria_weights(
     return main_weights, global_sub_weights, subs_by_parent
 
 
-def compute_topsis(global_sub_weights: Dict[str, float]) -> Dict[str, Any]:
+def compute_topsis(
+    global_sub_weights: Dict[str, float],
+    decision_df_override: Optional[pd.DataFrame] = None,
+) -> Dict[str, Any]:
     """
-    Run TOPSIS using the provided global sub-criteria weights and return a dict suitable for the UI.
+    Run TOPSIS using the provided global sub-criteria weights.
 
-    Args
-        global_sub_weights: dict mapping sub-criterion name -> weight (must match the decision matrix column names)
-
-    Returns
-        A dict with keys:
-            - 'ranking_df' : DataFrame with ranking results (alternatives sorted by closeness)
-            - 'score_matrix': DataFrame with sub-criteria as rows and alternatives as columns (good for heatmaps)
-            - 'weighted_df': DataFrame alternatives x sub-criteria after weighting (as returned by topsis function)
-            - 'topsis_result': the raw return from the topsis(...) function for advanced uses
+    If decision_df_override is provided, use it instead of the default get_decision_df().
+    The override should be a DataFrame with index=sub-criteria and columns=alternatives
+    (the same shape your topsis() implementation expects).
     """
-    decision_df = get_decision_df()
+    # obtain base decision matrix
+    if decision_df_override is None:
+        decision_df = get_decision_df()
+    else:
+        decision_df = decision_df_override.copy()
+
+    # defensive check: ensure rows are subcriteria and columns are alternatives
+    if not isinstance(decision_df, pd.DataFrame):
+        decision_df = pd.DataFrame(decision_df)
 
     topsis_result = topsis(
         decision_df=decision_df,
@@ -81,20 +86,22 @@ def compute_topsis(global_sub_weights: Dict[str, float]) -> Dict[str, Any]:
         criterion_types=CRITERION_TYPES,
     )
 
-    # expected fields from your topsis implementation
     ranking_df = topsis_result.get("ranking_df")
     weighted_df = topsis_result.get("weighted_df")
 
-    # create score_matrix shaped sub-criteria x alternatives for heatmap rendering:
-    # - weighted_df is expected to be alternatives x subcriteria (rows = alternatives)
-    # - transpose it so rows=subcriteria, cols=alternatives
+    # create score_matrix shaped sub-criteria x alternatives for heatmap rendering
+    # many of your UIs expect a transposed form; keep both available
     if weighted_df is None:
         raise ValueError(
             "topsis_result missing 'weighted_df' — ensure topsis returns weighted_df"
         )
 
-    score_matrix = weighted_df.transpose().copy()
-    # optional: make indices and columns human-friendly (if they're not already)
+    # adapt to UI-friendly shapes
+    score_matrix = (
+        weighted_df.transpose().copy()
+        if hasattr(weighted_df, "transpose")
+        else pd.DataFrame(weighted_df).transpose()
+    )
     score_matrix.index.name = "Sub-criterion"
     score_matrix.columns.name = "Alternative"
 

@@ -70,6 +70,7 @@ CRITERION_TYPES = {
     "Experience": "benefit",
     "Financial education": "benefit",
     "Risk attitude": "benefit",
+    "Success rate": "benefit",
 }
 
 
