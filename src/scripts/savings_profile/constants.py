@@ -17,7 +17,7 @@ FIELD_STEPS = {
 FIELD_LABELS = {
     "savings_target": "Savings Target (USD)",
     "time_horizon": "Time Horizon (months)",
-    "monthly_income": "Monthly Income - Gross (USD)",
+    "monthly_income": "Monthly Income - Net (USD)",
     "monthly_spending": "Monthly Spending (USD)",
     "initial_wealth": "Initial Wealth (USD)",
 }
