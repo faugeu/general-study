@@ -2,19 +2,19 @@ SAATY_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 TOOLTIPS = {
     "Availability": "Can be purchased or invested in easily",
-    "Information": "Quality and transparency of data available about the option.",
-    "Simplicity": "Full understanding of a financial product",
-    "Stability": "Little or no danger of losing the investment",
-    "Ability to save money": "Capacity to set aside money regularly",
-    "Financial priorities": "Goals that guide where money is allocated",
-    "Level of income": "Overall earnings that determine saving potential",
-    "Liquidity": "The ability to quickly convert the investment into cash",
-    "Return": "Dividends or interest to spend and/or reinvest",
-    "Success rate": "Likelihood of achieving the target return",
-    "Volatility": "The level of risk associated with price changes",
+    "Information": "Quality, transparency, and timeliness of data available about the option",
+    "Simplicity": "Degree to which a financial product is fully understandable",
+    "Stability": "Investment has little or no risk of capital loss",
+    "Ability to save money": "Capacity to regularly set aside money",
+    "Financial priorities": "Goals that guide allocation of financial resources",
+    "Level of income": "Total earnings that determine the potential to save and invest",
+    "Liquidity": "Ability to quickly convert the investment into cash without significant loss",
+    "Return": "Expected median return (p50) from dividends or interest to spend and/or reinvest",
+    "Success rate": "Probability of achieving the target return",
+    "Volatility": "Measured standard deviation of returns, indicating the level of price risk",
     "Experience": "Prior hands-on engagement with financial instruments",
-    "Financial education": "Knowledge of finance, investing, and economics",
-    "Risk attitude": "Tolerance for uncertainty and potential losses",
+    "Financial education": "Knowledge of finance, investing, and economic concepts",
+    "Risk attitude": "Individual tolerance for uncertainty and potential financial losses",
 }
 
 MATRICES = [
@@ -37,7 +37,7 @@ MATRICES = [
         ],
     },
     {
-        "key": "fin_sec",
+        "key": "financial security",
         "title": 'Matrix 2: Sub-criteria — "Financial Security"',
         "criteria": ["Availability", "Information", "Simplicity", "Stability"],
         "pairs": [
@@ -50,7 +50,7 @@ MATRICES = [
         ],
     },
     {
-        "key": "personal",
+        "key": "personal characteristics",
         "title": 'Matrix 3: Sub-criteria — "Personal Characteristics"',
         "criteria": [
             "Ability to save money",
@@ -64,7 +64,7 @@ MATRICES = [
         ],
     },
     {
-        "key": "profit",
+        "key": "profitability",
         "title": 'Matrix 4: Sub-criteria — "Profitability"',
         "criteria": ["Liquidity", "Return", "Success rate", "Volatility"],
         "pairs": [

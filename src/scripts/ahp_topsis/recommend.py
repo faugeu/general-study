@@ -30,11 +30,13 @@ def recommend_ahp_topsis(
     local_sub_weights = {}
     consistency_rows = []
 
-    consistency_rows.append({
-        "Node": "Main criteria",
-        "CR": criteria_result["CR"],
-        "Status": criteria_result["status"],
-    })
+    consistency_rows.append(
+        {
+            "Node": "Main criteria",
+            "CR": criteria_result["CR"],
+            "Status": criteria_result["status"],
+        }
+    )
 
     for criterion in CRITERIA:
         res = compute_crisp_consistency(
@@ -45,20 +47,28 @@ def recommend_ahp_topsis(
         sub_results[criterion] = res
         local_sub_weights[criterion] = res["weights_dict"]
 
-        consistency_rows.append({
-            "Node": criterion,
-            "CR": res["CR"],
-            "Status": res["status"],
-        })
+        consistency_rows.append(
+            {
+                "Node": criterion,
+                "CR": res["CR"],
+                "Status": res["status"],
+            }
+        )
 
     global_weights = compute_global_subcriteria_weights(
         criteria_weights, local_sub_weights
     )
 
-    global_weights_df = pd.DataFrame({
-        "Sub-criterion": list(global_weights.keys()),
-        "Global weight": list(global_weights.values()),
-    }).sort_values("Global weight", ascending=False).reset_index(drop=True)
+    global_weights_df = (
+        pd.DataFrame(
+            {
+                "Sub-criterion": list(global_weights.keys()),
+                "Global weight": list(global_weights.values()),
+            }
+        )
+        .sort_values("Global weight", ascending=False)
+        .reset_index(drop=True)
+    )
 
     topsis_result = topsis(
         decision_df=decision_df,
@@ -73,7 +83,7 @@ def recommend_ahp_topsis(
         top_alternative=top_alternative,
         weighted_df=topsis_result["weighted_df"],
         global_weights=global_weights,
-        top_n=5,
+        top_n=4,
     )
 
     explanation_text = (

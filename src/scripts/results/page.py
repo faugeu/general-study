@@ -68,7 +68,6 @@ def render_results_page() -> None:
     monthly_income = _get_session_value("profile_monthly_income", 20_000_000)
     monthly_spending = _get_session_value("profile_monthly_spending", 9_000_000)
     initial_wealth = _get_session_value("profile_initial_wealth", 50_000_000)
-    monthly_savings = max(0.0, monthly_income - monthly_spending)
 
     # ── Compute AHP weights (fast, no cache needed) ───────────────
     main_weights, sub_weights, subs_by_parent = compute_criteria_weights(matrices)
@@ -86,7 +85,11 @@ def render_results_page() -> None:
     # ════════════════════════════════════════════════════════════
     # SECTION 1 — Final Ranking
     # ════════════════════════════════════════════════════════════
-    render_final_ranking(scores)
+    ranking_dict = dict(
+        zip(scores["ranking_df"]["Alternative"], scores["ranking_df"]["Closeness"])
+    )
+
+    render_final_ranking(ranking_dict)
     st.divider()
 
     # ════════════════════════════════════════════════════════════

@@ -51,6 +51,23 @@ def render_survey_page() -> None:
         submit = st.button("LET'S SEE RESULTS →", key="survey_submit")
 
     if submit:
-        st.session_state["ahp_matrices"] = build_ahp_matrices(survey_results)
+
+        matrices = build_ahp_matrices(survey_results)
+
+        # Check CI for all matrices
+        invalid = []
+
+        for name, result in matrices.items():
+            if result["CR"] > 0.1:
+                invalid.append(name)
+
+        if invalid:
+            st.error(
+                "Your comparisons are inconsistent (CI > 0.1).\n\n"
+                f"Please review the following matrices:\n\n" + ", ".join(invalid)
+            )
+            return
+
+        st.session_state["ahp_matrices"] = matrices
         st.session_state.page = 2
         st.rerun()

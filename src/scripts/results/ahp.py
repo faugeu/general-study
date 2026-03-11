@@ -1,70 +1,106 @@
-"""results/ahp.py — AHP weight computation and TOPSIS scoring."""
+# results/ahp.py
+from typing import Dict, Tuple, Any
 
-import numpy as np
 import pandas as pd
 
-from results.constants import (
-    ALTERNATIVES,
-    ALT_SUBSCORES,
-    CRIT_RAW_MAP,
-)
-
-
-def ahp_weights(matrix: pd.DataFrame) -> np.ndarray:
-    """Compute priority vector from a pairwise comparison matrix."""
-    arr = matrix.values.astype(float)
-    col_sums = arr.sum(axis=0)
-    norm = arr / col_sums
-    return norm.mean(axis=1)
+# --- These imports assume your ahp_topsis package exposes same modules shown earlier ---
+from ahp_topsis.weights import compute_global_subcriteria_weights
+from ahp_topsis.topsis import topsis
+from ahp_topsis.constants import CRITERIA, CRITERION_TYPES, get_decision_df
 
 
 def compute_criteria_weights(
-    matrices: dict[str, pd.DataFrame],
-) -> tuple[dict[str, float], dict[str, float], dict[str, list[tuple[str, float]]]]:
+    prebuilt_matrices: dict,
+) -> Tuple[Dict[str, float], Dict[str, float], Dict[str, list]]:
     """
-    Returns:
-        main_weights   : {raw_criterion_name: global_weight}
-        sub_weights    : {short_sub_name: global_weight}
-        subs_by_parent : {display_crit_label: [(sub_name, local_weight), ...]}
-    """
-    main_w = ahp_weights(matrices["main"])
-    crit_names = list(matrices["main"].index)
-    main_weights = dict(zip(crit_names, main_w))
+    Convert the prebuilt/precomputed AHP matrices into the three objects the UI expects.
 
-    sub_weights: dict[str, float] = {}
-    subs_by_parent: dict[str, list[tuple[str, float]]] = {
-        label: [] for _, label in CRIT_RAW_MAP.values()
+    Args
+        prebuilt_matrices: dict written to st.session_state["ahp_matrices"] by the survey flow.
+            Expected keys:
+                - "main" -> {"weights_dict": {...}, "CR": ..., "status": ...}
+                - one key per main criterion in lowercase (e.g. "financial security") -> {"weights_dict": {...}, ...}
+
+    Returns
+        main_weights: dict mapping main criterion -> weight (used to render top-level cards)
+        global_sub_weights: dict mapping sub-criterion name -> global weight (suitable to pass straight to TOPSIS)
+        subs_by_parent: dict mapping main criterion -> list of its sub-criteria names (used by the UI)
+    """
+    # main criteria
+    if "main" not in prebuilt_matrices:
+        raise KeyError(
+            "prebuilt_matrices must include a 'main' key with top-level results"
+        )
+
+    criteria_result = prebuilt_matrices["main"]
+    main_weights = criteria_result.get("weights_dict", {})
+
+    # collect local sub-weights and build subs_by_parent
+    local_sub_weights = {}
+    subs_by_parent = {}
+
+    for criterion in CRITERIA:
+        key = criterion.lower()
+        if key not in prebuilt_matrices:
+            raise KeyError(
+                f"Missing AHP matrix for criterion '{criterion}' (expected key '{key}')"
+            )
+
+        res = prebuilt_matrices[key]
+        weights_dict = res.get("weights_dict", {})
+        local_sub_weights[criterion] = weights_dict
+        subs_by_parent[criterion] = weights_dict
+
+    # compute flattened global sub-criteria weights (AHP: main_weights * local weights)
+    global_sub_weights = compute_global_subcriteria_weights(
+        main_weights, local_sub_weights
+    )
+
+    return main_weights, global_sub_weights, subs_by_parent
+
+
+def compute_topsis(global_sub_weights: Dict[str, float]) -> Dict[str, Any]:
+    """
+    Run TOPSIS using the provided global sub-criteria weights and return a dict suitable for the UI.
+
+    Args
+        global_sub_weights: dict mapping sub-criterion name -> weight (must match the decision matrix column names)
+
+    Returns
+        A dict with keys:
+            - 'ranking_df' : DataFrame with ranking results (alternatives sorted by closeness)
+            - 'score_matrix': DataFrame with sub-criteria as rows and alternatives as columns (good for heatmaps)
+            - 'weighted_df': DataFrame alternatives x sub-criteria after weighting (as returned by topsis function)
+            - 'topsis_result': the raw return from the topsis(...) function for advanced uses
+    """
+    decision_df = get_decision_df()
+
+    topsis_result = topsis(
+        decision_df=decision_df,
+        weights_dict=global_sub_weights,
+        criterion_types=CRITERION_TYPES,
+    )
+
+    # expected fields from your topsis implementation
+    ranking_df = topsis_result.get("ranking_df")
+    weighted_df = topsis_result.get("weighted_df")
+
+    # create score_matrix shaped sub-criteria x alternatives for heatmap rendering:
+    # - weighted_df is expected to be alternatives x subcriteria (rows = alternatives)
+    # - transpose it so rows=subcriteria, cols=alternatives
+    if weighted_df is None:
+        raise ValueError(
+            "topsis_result missing 'weighted_df' — ensure topsis returns weighted_df"
+        )
+
+    score_matrix = weighted_df.transpose().copy()
+    # optional: make indices and columns human-friendly (if they're not already)
+    score_matrix.index.name = "Sub-criterion"
+    score_matrix.columns.name = "Alternative"
+
+    return {
+        "ranking_df": ranking_df,
+        "score_matrix": score_matrix,
+        "weighted_df": weighted_df,
+        "topsis_result": topsis_result,
     }
-
-    for raw_crit, (mat_key, crit_label) in CRIT_RAW_MAP.items():
-        parent_w = main_weights.get(raw_crit, 0.0)
-        local_w = ahp_weights(matrices[mat_key])
-        sub_names = list(matrices[mat_key].index)
-        for name, lw in zip(sub_names, local_w):
-            short = _shorten_subcrit(name)
-            sub_weights[short] = lw * parent_w
-            subs_by_parent[crit_label].append((name, lw))
-
-    return main_weights, sub_weights, subs_by_parent
-
-
-def compute_topsis(sub_weights: dict[str, float]) -> dict[str, float]:
-    """
-    Weighted-sum score per alternative using AHP sub-weights
-    and fixed ALT_SUBSCORES reference values.
-    Returns {alternative: score}.
-    """
-    scores = np.zeros(len(ALTERNATIVES))
-    total_w = 0.0
-    for sub, w in sub_weights.items():
-        if sub in ALT_SUBSCORES:
-            scores += w * np.array(ALT_SUBSCORES[sub])
-            total_w += w
-    if total_w > 0:
-        scores /= total_w
-    return dict(zip(ALTERNATIVES, scores))
-
-
-def _shorten_subcrit(name: str) -> str:
-    mapping = {"Ability to save money": "Ability to save"}
-    return mapping.get(name, name)
