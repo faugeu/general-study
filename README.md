@@ -8,11 +8,9 @@ Project created with MLOps-Template cookiecutter. For more info: https://mlopsst
 general-study/
 ├── data/
 │   └── ahp_payload_example.json          # Example JSON input for AHP comparisons
-├── github_actions/
-│   └── wake_streamlit.py                 # Script to keep Streamlit app alive
-├── models/                               # Saved model artifacts
+├── github_actions/                       # Scripts for github actions
 ├── notebooks/                            # Jupyter notebooks for exploration
-├── results/                              # Pipeline output (CSV / JSON)
+├── results/                              # AHP-TOPSIS sample pipeline output (CSV / JSON)
 │   ├── ahp_topsis_consistency.csv
 │   ├── ahp_topsis_global_weights.csv
 │   ├── ahp_topsis_ranking.csv
@@ -65,9 +63,7 @@ general-study/
 │   │   └── run_ahp_pipeline.py           # CLI entry point for AHP-TOPSIS pipeline
 │   └── tests/
 │       └── test_generalstudy.py
-├── .github/workflows/
-│   ├── test_on_push.yaml                 # CI pipeline (Black + Pytest)
-│   └── wake_streamlit.yaml               # Scheduled job to keep app alive
+├── .github/workflows/                    # Github action workflows
 ├── .pre-commit-config.yaml
 ├── pyproject.toml
 ├── requirements.txt
@@ -82,64 +78,9 @@ uv init
 python3 -m venv .venv
 ```
 
+##  Running Project
 ```
 uv sync
 source .venv/bin/activate
 streamlit run src/scripts/app.py
-uv add streamlit
-```
-
-
-##  Running Project
-
-### Setup IBM Bucket Credentials for IBM COS
-
-#### MacOS and Linux
-Setup your credentials on ```~/.aws/credentials``` and ```~/.aws/config```. DVC works perfectly with IBM Obejct Storage, although it uses S3 protocol, you can also see this in other portions of the repository.
-
-
-~/.aws/credentials
-
-```credentials
-[default]
-aws_access_key_id = {Key ID}
-aws_secret_access_key = {Access Key}
-```
-
-
-### Pre-commit Testings
-
-In order to activate pre-commit testing you need ```pre-commit```
-
-Installing pre-commit with pip
-```
-pip install pre-commit
-```
-
-Installing pre-commit on your local repository. Keep in mind this creates a Github Hook.
-```
-pre-commit install
-```
-
-Now everytime you make a commit, it will run some tests defined on ```.pre-commit-config.yaml``` before allowing your commit.
-
-**Example**
-```
-$ git commit -m "Example commit"
-
-black....................................................................Passed
-pytest-check.............................................................Passed
-```
-
-
-### Using DVC
-
-Download data from the DVC repository(analog to ```git pull```)
-```
-dvc pull
-```
-
-Reproduces the pipeline using DVC
-```
-dvc repro
 ```
