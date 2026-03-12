@@ -132,10 +132,9 @@ def render_results_page() -> None:
     for row_name, values in mc_rows.items():
         merged_df.loc[row_name] = values
 
-    print("Merged decision matrix with MC rows:", merged_df)
-
-    for name in mc_rows.keys():
-        merged_df.loc[name] = _vector_normalize_row(merged_df.loc[name].values.tolist())
+    # Optional: In topsis code already has a normalization step
+    # for name in mc_rows.keys():
+    #     merged_df.loc[name] = _vector_normalize_row(merged_df.loc[name].values.tolist())
 
     # --- Compute AHP weights and run TOPSIS using the merged decision matrix ---
     main_weights, sub_weights, subs_by_parent = compute_criteria_weights(matrices)
