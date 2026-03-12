@@ -10,11 +10,6 @@ general-study/
 │   └── ahp_payload_example.json          # Example JSON input for AHP comparisons
 ├── github_actions/                       # Scripts for github actions
 ├── notebooks/                            # Jupyter notebooks for exploration
-├── results/                              # AHP-TOPSIS sample pipeline output (CSV / JSON)
-│   ├── ahp_topsis_consistency.csv
-│   ├── ahp_topsis_global_weights.csv
-│   ├── ahp_topsis_ranking.csv
-│   └── ahp_topsis_summary.json
 ├── src/
 │   ├── scripts/
 │   │   ├── ahp_topsis/                   # AHP + TOPSIS pipeline package
