@@ -183,7 +183,7 @@ def render_results_page() -> None:
     st.markdown(
         f'<div style="font-size:14px;color:#000;margin-bottom:12px;">'
         f"1,000 trials per alternative · "
-        f"Portfolio value over {time_horizon} months</div>",
+        f"Savings over {time_horizon} months</div>",
         unsafe_allow_html=True,
     )
 
