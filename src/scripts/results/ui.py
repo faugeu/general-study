@@ -107,7 +107,6 @@ def render_params_bar(
 
 
 def render_final_ranking(scores: dict[str, float]) -> None:
-    section_header("Final Ranking")
 
     ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)
 

@@ -42,7 +42,7 @@ st.markdown(
 {_IMPORT_URL}
 :root {{ --header-h: 72px; }}
 
-body {{ background:#FFFFFF; font-family:'Outfit',sans-serif; }}
+body {{ font-family:'Outfit',sans-serif; }}
 [data-testid="stSidebar"]        {{ display:none !important; }}
 [data-testid="collapsedControl"] {{ display:none !important; }}
 [data-testid="stHeader"] {{ display:none !important; }}
@@ -80,8 +80,9 @@ footer    {{ display:none !important; }}
 .hero-title {{
     font-size:48px; font-family:'Cormorant Garamond',serif;
     line-height:1.1; margin:20px 0 20px;
+    color:var(--text-color);
 }}
-.hero-desc {{ font-size:18px; color:var(--text-color); opacity:0.7 ; margin-bottom:0; }}
+.hero-desc {{ font-size:18px; color:var(--text-color); opacity:0.75; margin-bottom:0; }}
 
 /* CARD LABEL */
 .card-label {{
@@ -97,7 +98,7 @@ footer    {{ display:none !important; }}
     padding-bottom:5px; border-bottom:2px solid #119822;
 }}
 .matrix-desc {{
-    font-size:16px; color:var(--text-color); opacity:0.7;
+    font-size:16px; color:var(--text-color); opacity:0.75;
     margin-bottom:4px; line-height:1.5; margin-top:16px;
 }}
 .criteria-name {{ font-size:14px; font-weight:600; color:var(--text-color); }}
@@ -185,6 +186,86 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
+
+
+# ---------- TRY EXAMPLE ----------
+def _load_example():
+    """Fill session state with a realistic example profile — Minh, 27 y/o."""
+    # Savings Profile
+    st.session_state["profile_savings_target"] = 8_000
+    st.session_state["profile_time_horizon"] = 18
+    st.session_state["profile_monthly_income"] = 700
+    st.session_state["profile_monthly_spending"] = 420
+    st.session_state["profile_initial_wealth"] = 1_200
+
+    # AHP pairwise survey
+    # Minh prioritises Profitability > Financial Security > Personal > Readiness
+    example_survey = {
+        "main": {
+            ("Profitability", "Financial security"): 2.0,
+            ("Profitability", "Personal characteristics"): 3.0,
+            ("Profitability", "Readiness"): 4.0,
+            ("Financial security", "Personal characteristics"): 2.0,
+            ("Financial security", "Readiness"): 3.0,
+            ("Personal characteristics", "Readiness"): 2.0,
+        },
+        # Financial Security sub-criteria: Stability most important
+        "fin_sec": {
+            ("Availability", "Information"): 2.0,
+            ("Availability", "Simplicity"): 3.0,
+            ("Availability", "Stability"): 0.5,
+            ("Information", "Simplicity"): 2.0,
+            ("Information", "Stability"): 0.33,
+            ("Simplicity", "Stability"): 0.25,
+        },
+        # Personal Characteristics: Level of income > Ability to save > Financial priorities
+        "personal": {
+            ("Ability to save money", "Financial priorities"): 2.0,
+            ("Ability to save money", "Level of income"): 0.5,
+            ("Financial priorities", "Level of income"): 0.33,
+        },
+        # Profitability: Return > Liquidity > Success rate > Volatility
+        "profit": {
+            ("Liquidity", "Return"): 0.5,
+            ("Liquidity", "Success rate"): 2.0,
+            ("Liquidity", "Volatility"): 3.0,
+            ("Return", "Success rate"): 3.0,
+            ("Return", "Volatility"): 4.0,
+            ("Success rate", "Volatility"): 2.0,
+        },
+        # Readiness: Financial education > Risk attitude > Experience
+        "readiness": {
+            ("Experience", "Financial education"): 0.33,
+            ("Experience", "Risk attitude"): 0.5,
+            ("Financial education", "Risk attitude"): 2.0,
+        },
+    }
+
+    from survey.builder import build_ahp_matrices
+
+    st.session_state["ahp_matrices"] = build_ahp_matrices(example_survey)
+    st.session_state["is_example"] = True
+    st.session_state.page = 2
+
+
+_, ex_col, _ = st.columns([2, 3, 2])
+with ex_col:
+    st.markdown(
+        '<div style="text-align:center;">'
+        '<span style="font-size:14px;color:var(--text-color);opacity:0.8;">'
+        "✦ Not sure where to start? Try our example profile to see how it works! "
+        "</span></div>",
+        unsafe_allow_html=True,
+    )
+    if st.button(
+        "Try Example: Minh, 27 y/o - Office Worker",
+        key="try_example",
+        use_container_width=True,
+    ):
+        _load_example()
+        st.rerun()
+
 st.divider()
 
 # ---------- STEPPER ----------
@@ -208,6 +289,7 @@ for col, idx, label in [(s0, 0, STEPS[0]), (s1, 1, STEPS[1]), (s2, 2, STEPS[2])]
             )
         elif idx < page:
             if st.button(f"✓  {label}", key=f"step_btn_{idx}"):
+                st.session_state["is_example"] = False
                 st.session_state.page = idx
                 st.rerun()
         else:
@@ -228,7 +310,8 @@ for col in [sep1, sep2]:
     with col:
         st.markdown(
             '<div style="height:34px;display:flex;align-items:center;">'
-            '<div style="width:100%;height:1px;background:var(--secondary-background-color);"></div>'
+            '<div style="width:100%;height:1px;'
+            'background:var(--secondary-background-color);"></div>'
             "</div>",
             unsafe_allow_html=True,
         )
@@ -237,8 +320,10 @@ st.markdown('<div style="height:8px;"></div>', unsafe_allow_html=True)
 
 # ---------- PAGE DISPATCH ----------
 if st.session_state.page == 0:
+    st.session_state["is_example"] = False
     render_profile_page()
 elif st.session_state.page == 1:
+    st.session_state["is_example"] = False
     render_survey_page()
 elif st.session_state.page == 2:
     render_results_page()
