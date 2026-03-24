@@ -13,14 +13,14 @@ if "page" not in st.session_state:
 # fmt: off
 _CSS_LONG = (
     "div[data-testid='stNumberInput'] label"
-    " { font-size:13px !important; color:#444 !important; }\n"
+    " { font-size:13px !important; color:var(--text-color) !important; }\n"
     "div[data-testid='stNumberInput'] input"
     " { border-radius:6px !important; font-size:14px !important; }\n"
     "div[data-testid='stAlert']"
     " { font-size:13px !important; padding:6px 12px !important;"
     " margin-top:2px !important; }\n"
     "div[data-testid='stSlider'] label"
-    " { font-size:11px !important; color:#888 !important; }\n"
+    " { font-size:11px !important; color:var(--text-color) !important; }\n"
     "div[data-testid='stSlider'] [data-baseweb='slider']"
     " div[class*='Track'] > div:first-child"
     " { background:#119822 !important; }\n"
@@ -81,7 +81,7 @@ footer    {{ display:none !important; }}
     font-size:48px; font-family:'Cormorant Garamond',serif;
     line-height:1.1; margin:20px 0 20px;
 }}
-.hero-desc {{ font-size:18px; color:#555; margin-bottom:0; }}
+.hero-desc {{ font-size:18px; color:var(--text-color); opacity:0.7 ; margin-bottom:0; }}
 
 /* CARD LABEL */
 .card-label {{
@@ -93,14 +93,14 @@ footer    {{ display:none !important; }}
 /* SURVEY */
 .matrix-title {{
     font-size:20px; font-weight:700;
-    color:#1a1a1a; margin:6px 0 4px;
+    color:var(--text-color); margin:6px 0 4px;
     padding-bottom:5px; border-bottom:2px solid #119822;
 }}
 .matrix-desc {{
-    font-size:16px; color:#666;
+    font-size:16px; color:var(--text-color); opacity:0.7;
     margin-bottom:4px; line-height:1.5; margin-top:16px;
 }}
-.criteria-name {{ font-size:14px; font-weight:600; color:#1a1a1a; }}
+.criteria-name {{ font-size:14px; font-weight:600; color:var(--text-color); }}
 
 /* TOOLTIP */
 .tooltip-wrap {{
@@ -213,10 +213,13 @@ for col, idx, label in [(s0, 0, STEPS[0]), (s1, 1, STEPS[1]), (s2, 2, STEPS[2])]
         else:
             st.markdown(
                 f'<div style="display:inline-flex;align-items:center;gap:8px;padding:7px 4px;">'
-                f'<span style="width:20px;height:20px;border-radius:50%;background:#eee;'
+                f'<span style="width:20px;height:20px;border-radius:50%;'
+                f"background:var(--secondary-background-color);"
                 f"display:flex;align-items:center;justify-content:center;"
-                f'font-size:11px;font-weight:700;color:#aaa;">{idx + 1}</span>'
-                f'<span style="font-size:12px;font-weight:600;color:#bbb;">{label}</span>'
+                f'font-size:11px;font-weight:700;color:var(--text-color);opacity:0.4;">'
+                f"{idx + 1}</span>"
+                f'<span style="font-size:12px;font-weight:600;'
+                f'color:var(--text-color);opacity:0.4;">{label}</span>'
                 f"</div>",
                 unsafe_allow_html=True,
             )
@@ -225,7 +228,7 @@ for col in [sep1, sep2]:
     with col:
         st.markdown(
             '<div style="height:34px;display:flex;align-items:center;">'
-            '<div style="width:100%;height:1px;background:#ddd;"></div>'
+            '<div style="width:100%;height:1px;background:var(--secondary-background-color);"></div>'
             "</div>",
             unsafe_allow_html=True,
         )

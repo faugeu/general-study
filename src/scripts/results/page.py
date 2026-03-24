@@ -94,7 +94,7 @@ def render_results_page() -> None:
     # ════════════════════════════════════════════════════════════
     section_header("Monte Carlo Simulation")
     st.markdown(
-        f'<div style="font-size:14px;color:#000;margin-bottom:12px;">'
+        f'<div style="font-size:14px;color:var(--text-color);margin-bottom:12px;">'
         f"1,000 trials per alternative · "
         f"Portfolio value over {time_horizon} months</div>",
         unsafe_allow_html=True,
@@ -140,7 +140,7 @@ def render_results_page() -> None:
     # ════════════════════════════════════════════════════════════
     section_header("AHP Decision Framework")
     st.markdown(
-        '<div style="font-size:14px;color:#000;margin-bottom:12px;">'
+        '<div style="font-size:14px;color:var(--text-color);margin-bottom:12px;">'
         "Criteria weights derived from your pairwise survey · "
         "Sub-criteria scores per alternative</div>",
         unsafe_allow_html=True,
@@ -150,12 +150,12 @@ def render_results_page() -> None:
 
     st.markdown('<div style="height:20px;"></div>', unsafe_allow_html=True)
     st.markdown(
-        '<div style="font-size:25px;font-weight:600;color:#000;'
+        '<div style="font-size:25px;font-weight:600;color:var(--text-color);'
         'margin-bottom:4px;">Sub-criteria Score Matrix</div>',
         unsafe_allow_html=True,
     )
     st.markdown(
-        '<div style="font-size:14px;color:#000;margin-bottom:12px;">'
+        '<div style="font-size:14px;color:var(--text-color);margin-bottom:12px;">'
         "Warmer cells = higher score within each row</div>",
         unsafe_allow_html=True,
     )

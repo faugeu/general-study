@@ -4,7 +4,7 @@ from .constants import TOOLTIPS
 def tooltip_html(name: str) -> str:
     """Return an HTML span for a criterion name, with a tooltip if available."""
     tip = TOOLTIPS.get(name, "")
-    base_style = "font-size:14px;font-weight:600;color:#1a1a1a;"
+    base_style = "font-size:14px;font-weight:600;color:var(--text-color);"
 
     if tip:
         return (

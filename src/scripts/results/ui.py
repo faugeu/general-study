@@ -9,42 +9,42 @@ _CSS = """
 <style>
 .params-bar {
     display: flex; gap: 24px; flex-wrap: wrap;
-    background: #f7f9f7; border: 1px solid #d6ead7;
+    background: var(--secondary-background-color); border: 1px solid #d6ead7;
     border-radius: 10px; padding: 16px 24px; margin-bottom: 24px;
 }
 .params-item { display: flex; flex-direction: column; gap: 4px; }
 .params-lbl {
-    font-size: 12px; color: #000; letter-spacing: 1px;
+    font-size: 12px; color: var(--text-color); letter-spacing: 1px;
     text-transform: uppercase; font-weight: 500;
 }
 .params-val { font-size: 16px; font-weight: 600; color: #119822; }
 .crit-card {
-    background: #fafbfa; border: 1px solid #e2e8e2;
+    background: var(--secondary-background-color); border: 1px solid #e2e8e2;
     border-radius: 10px; padding: 16px 20px; margin-bottom: 10px;
 }
 .crit-head { display: flex; align-items: center; gap: 12px; }
 .crit-dot  { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-.crit-name { font-size: 16px; font-weight: 700; color: #000; flex: 1; }
+.crit-name { font-size: 16px; font-weight: 700; color: var(--text-color); flex: 1; }
 .crit-pct  { font-size: 20px; font-weight: 700; }
 .mini-bar-wrap {
-    width: 70px; height: 6px; background: rgba(0,0,0,0.07);
+    width: 70px; height: 6px; background: rgba(128,128,128,0.25);
     border-radius: 99px; overflow: hidden; margin-left: 8px;
 }
 .mini-bar-fill { height: 100%; border-radius: 99px; }
 .sub-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
-.sub-name { font-size: 13px; color: #000; width: 160px; flex-shrink: 0; }
+.sub-name { font-size: 13px; color: var(--text-color); width: 160px; flex-shrink: 0; }
 .sub-bar-wrap {
-    flex: 1; height: 6px; background: rgba(0,0,0,0.06);
+    flex: 1; height: 6px; background: rgba(128,128,128,0.2);
     border-radius: 99px; overflow: hidden;
 }
 .sub-bar-fill { height: 100%; border-radius: 99px; opacity: 0.8; }
-.sub-val { font-size: 13px; color: #000; width: 52px; text-align: right; }
+.sub-val { font-size: 13px; color: var(--text-color); width: 52px; text-align: right; }
 .heatmap-table-wrap { overflow-x: auto; }
 .heatmap-table {
     width: 100%; border-collapse: collapse; font-size: 14px;
 }
 .heatmap-table th {
-    padding: 10px 14px; color: #000; font-weight: 600; font-size: 13px;
+    padding: 10px 14px; color: var(--text-color); font-weight: 600; font-size: 13px;
     border-bottom: 1px solid #e0e0e0; text-align: center; white-space: nowrap;
 }
 .heatmap-table th:first-child { text-align: left; }
@@ -52,7 +52,7 @@ _CSS = """
     padding: 9px 14px; text-align: center;
     font-size: 13px; white-space: nowrap; border-bottom: 1px solid #f0f0f0;
 }
-.heatmap-table td:first-child { text-align: left; color: #000; }
+.heatmap-table td:first-child { text-align: left; color: var(--text-color); }
 .heatmap-table tr.overall-row td {
     border-top: 2px solid #ccc; font-weight: 700; font-size: 14px;
 }
@@ -128,7 +128,7 @@ def render_final_ranking(scores: dict[str, float]) -> None:
         podium_html += (
             f'<div style="flex:1;display:flex;flex-direction:column;'
             f'align-items:center;">'
-            f'<div style="font-size:14px;color:#000;margin-bottom:6px;'
+            f'<div style="font-size:14px;color:var(--text-color);margin-bottom:6px;'
             f'text-align:center;font-weight:500;">{alt}</div>'
             f'<div style="font-size:16px;font-weight:700;color:{bar_color};'
             f'margin-bottom:6px;">{score * 100:.1f}%</div>'
@@ -147,12 +147,12 @@ def render_final_ranking(scores: dict[str, float]) -> None:
         for rank_n, (alt, score) in enumerate(ranked[3:], start=4):
             bar_color = ALT_COLORS.get(alt, "#888")
             rest_html += (
-                f'<div style="flex:1;background:#f5f5f5;'
+                f'<div style="flex:1;background:var(--secondary-background-color);'
                 f"border:1px solid #e0e0e0;border-radius:8px;"
                 f'padding:14px 16px;text-align:center;">'
-                f'<div style="font-size:12px;color:#000;margin-bottom:4px;">'
+                f'<div style="font-size:12px;color:var(--text-color);margin-bottom:4px;">'
                 f"#{rank_n}</div>"
-                f'<div style="font-size:15px;color:#000;font-weight:500;">'
+                f'<div style="font-size:15px;color:var(--text-color);font-weight:500;">'
                 f"{alt}</div>"
                 f'<div style="font-size:16px;font-weight:700;color:{bar_color};">'
                 f"{score * 100:.1f}%</div>"
