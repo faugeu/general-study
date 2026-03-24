@@ -27,6 +27,34 @@ _MC_CACHE_KEY = "mc_results"
 _MC_PARAMS_KEY = "mc_params_snapshot"
 
 
+def _interpret_ahp_weights(main_weights: dict, subs_by_parent: dict) -> str:
+    """Generate human-readable insights from AHP weights (tailored for example mode)."""
+
+    # Sort main criteria
+    sorted_main = sorted(main_weights.items(), key=lambda x: x[1], reverse=True)
+
+    top_main, top_val = sorted_main[0]
+    second_main, second_val = sorted_main[1]
+
+    # Get top sub-criteria per main
+    sub_insights = []
+    for parent, subs in subs_by_parent.items():
+        if not subs:
+            continue
+        top_sub = max(subs.items(), key=lambda x: x[1])
+        sub_insights.append(f"<b>{parent}</b>: {top_sub[0]}")
+
+    sub_text = " · ".join(sub_insights)
+
+    return (
+        f"For this profile, <b>{top_main}</b> is the dominant decision driver, "
+        f"indicating a strong preference toward outcomes related to this dimension. "
+        f"<b>{second_main}</b> is also important but plays a secondary role.\n\n"
+        f"At a more detailed level, key priorities include: {sub_text}. "
+        f"This suggests the decision is primarily influenced by these specific factors."
+    )
+
+
 def _get_session_value(key: str, default):
     """Read a user-entered value from session_state or return default."""
     return st.session_state.get(key, default)
@@ -279,10 +307,17 @@ def render_results_page() -> None:
         unsafe_allow_html=True,
     )
 
-    _info_box(
-        "The <b>AHP</b> assigns weights to criteria based on your pairwise comparisons"
-        ", showing how strongly each factor influences the final decision. "
-    )
+    if st.session_state.get("is_example"):
+        _info_box(
+            "<b>Minh’s Decision Profile</b><br><br>"
+            + _interpret_ahp_weights(main_weights, subs_by_parent)
+        )
+    else:
+        _info_box(
+            "The <b>AHP</b> assigns weights to criteria based on your pairwise comparisons, "
+            "showing how strongly each factor influences the final decision."
+        )
+
     render_ahp_criteria_cards(main_weights, subs_by_parent)
 
     st.markdown('<div style="height:20px;"></div>', unsafe_allow_html=True)

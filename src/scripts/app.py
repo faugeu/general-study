@@ -248,10 +248,23 @@ def _load_example():
 
 
 if st.session_state.get("is_example", False):
-    st.success(
-        "Example profile loaded! We've prefilled the **Savings Profile** "
-        "and **Criterias-Priority Survey** for you.\n\n"
-        "Feel free to adjust any values to better match your personal situation."
+    st.success("✨ Example profile loaded!")
+
+    st.markdown(
+        """
+**Minh (27 y/o, Office Worker)**  
+
+**Scenario Overview**  
+Minh is at an early stage in his career with a stable income but limited savings.  
+He aims to grow steadily his savings over the next 1–2 years, prioritizing higher returns while still maintaining a reasonable level of financial security.
+
+**Financial Characteristics**
+- Moderate income, careful spending habits  
+- Low initial wealth  
+- Medium-term savings goal (1–2 years)  
+
+💡 *All inputs are prefilled — you can freely adjust them to match your situation.*
+"""
     )
 
 _, ex_col, _ = st.columns([2, 3, 2])
@@ -325,10 +338,10 @@ st.markdown('<div style="height:8px;"></div>', unsafe_allow_html=True)
 
 # ---------- PAGE DISPATCH ----------
 if st.session_state.page == 0:
-    st.session_state["is_example"] = False
+    # st.session_state["is_example"] = False
     render_profile_page()
 elif st.session_state.page == 1:
-    st.session_state["is_example"] = False
+    # st.session_state["is_example"] = False
     render_survey_page()
 elif st.session_state.page == 2:
     render_results_page()
