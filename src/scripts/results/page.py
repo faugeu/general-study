@@ -73,6 +73,9 @@ def render_results_page() -> None:
     time_horizon = _get_session_value("profile_time_horizon", 6)
     monthly_income = _get_session_value("profile_monthly_income", 20_000_000)
     monthly_spending = _get_session_value("profile_monthly_spending", 9_000_000)
+    monthly_savings = _get_session_value(
+        "profile_monthly_savings", monthly_income - monthly_spending
+    )
     initial_wealth = _get_session_value("profile_initial_wealth", 50_000_000)
 
     # --- Monte Carlo: run (or load cached) before TOPSIS so MC rows are incorporated ---
@@ -244,8 +247,9 @@ def render_results_page() -> None:
         with st.spinner("Running Monte Carlo simulations…"):
             st.session_state[_MC_CACHE_KEY] = run_all_simulations(
                 time_horizon=time_horizon,
-                monthly_savings=monthly_savings,
                 initial_wealth=initial_wealth,
+                monthly_income=monthly_income,
+                monthly_spending=monthly_spending,
             )
         st.session_state[_MC_PARAMS_KEY] = mc_params
 
