@@ -1,17 +1,17 @@
 FIELD_DEFAULTS = {
-    "savings_target": 100_000_000,
-    "time_horizon": 6,
-    "monthly_income": 20_000_000,
-    "monthly_spending": 9_000_000,
-    "initial_wealth": 50_000_000,
+    "savings_target": 1_000_000,
+    "time_horizon": 24,
+    "monthly_income": 20_000,
+    "monthly_spending": 9_000,
+    "initial_wealth": 50_000,
 }
 
 FIELD_STEPS = {
-    "savings_target": 1_000_000,
+    "savings_target": 1_000,
     "time_horizon": 1,
-    "monthly_income": 500_000,
-    "monthly_spending": 100_000,
-    "initial_wealth": 1_000_000,
+    "monthly_income": 500,
+    "monthly_spending": 500,
+    "initial_wealth": 1_000,
 }
 
 FIELD_LABELS = {

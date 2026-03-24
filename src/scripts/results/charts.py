@@ -67,7 +67,7 @@ def build_run_chart(
                 x=months,
                 y=run.tolist(),
                 mode="lines",
-                line={"color": "rgba(180,180,180,0.15)", "width": 0.6},
+                line={"color": "rgba(150,150,150,0.15)", "width": 0.6},
                 showlegend=False,
                 hoverinfo="skip",
             )
@@ -134,7 +134,7 @@ def build_run_chart(
         yaxis={
             "title": "Portfolio Value (USD)",
             "gridcolor": "rgba(0,0,0,0.06)",
-            "tickformat": ".2s",
+            "tickformat": ".3s",
             "range": [y_bottom - y_pad, y_top + y_pad],
         },
         legend={"orientation": "h", "y": -0.28, "x": 0, "font": {"size": 10}},
@@ -238,7 +238,7 @@ def build_histogram(
         xaxis={
             "title": "Terminal Wealth (USD)",
             "gridcolor": "rgba(0,0,0,0.06)",
-            "tickformat": ".2s",
+            "tickformat": ".3s",
             "range": [x_left - x_pad, x_right + x_pad],
             "nticks": nticks,
         },

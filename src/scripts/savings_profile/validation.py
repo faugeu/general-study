@@ -17,8 +17,8 @@ def validate(values: dict) -> bool:
     has_error = False
 
     for key, label in zero_fields.items():
-        if values[key] == 0:
-            st.warning(f"{label} cannot be 0.")
+        if values[key] in [None, "", 0]:
+            st.warning(f"{label} cannot be empty or 0.")
             has_error = True
 
     if values["monthly_spending"] >= values["monthly_income"]:
