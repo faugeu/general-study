@@ -193,25 +193,25 @@ st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
 def _load_example():
     """Fill session state with a realistic example profile — Minh, 27 y/o."""
     # Savings Profile
-    st.session_state["profile_savings_target"] = 8_000
-    st.session_state["profile_time_horizon"] = 18
-    st.session_state["profile_monthly_income"] = 700
-    st.session_state["profile_monthly_spending"] = 420
-    st.session_state["profile_initial_wealth"] = 1_200
+    st.session_state["savings_target"] = 8_000
+    st.session_state["time_horizon"] = 18
+    st.session_state["monthly_income"] = 700
+    st.session_state["monthly_spending"] = 420
+    st.session_state["initial_wealth"] = 1_200
 
     # AHP pairwise survey
     # Minh prioritises Profitability > Financial Security > Personal > Readiness
     example_survey = {
         "main": {
-            ("Profitability", "Financial security"): 2.0,
-            ("Profitability", "Personal characteristics"): 3.0,
+            ("Financial security", "Profitability"): 1 / 2,
+            ("Personal characteristics", "Profitability"): 1 / 3,
             ("Profitability", "Readiness"): 4.0,
             ("Financial security", "Personal characteristics"): 2.0,
             ("Financial security", "Readiness"): 3.0,
             ("Personal characteristics", "Readiness"): 2.0,
         },
         # Financial Security sub-criteria: Stability most important
-        "fin_sec": {
+        "financial security": {
             ("Availability", "Information"): 2.0,
             ("Availability", "Simplicity"): 3.0,
             ("Availability", "Stability"): 0.5,
@@ -220,13 +220,13 @@ def _load_example():
             ("Simplicity", "Stability"): 0.25,
         },
         # Personal Characteristics: Level of income > Ability to save > Financial priorities
-        "personal": {
+        "personal characteristics": {
             ("Ability to save money", "Financial priorities"): 2.0,
             ("Ability to save money", "Level of income"): 0.5,
             ("Financial priorities", "Level of income"): 0.33,
         },
         # Profitability: Return > Liquidity > Success rate > Volatility
-        "profit": {
+        "profitability": {
             ("Liquidity", "Return"): 0.5,
             ("Liquidity", "Success rate"): 2.0,
             ("Liquidity", "Volatility"): 3.0,
@@ -242,12 +242,17 @@ def _load_example():
         },
     }
 
-    from survey.builder import build_ahp_matrices
-
-    st.session_state["ahp_matrices"] = build_ahp_matrices(example_survey)
+    st.session_state["ahp_matrices"] = example_survey
     st.session_state["is_example"] = True
-    st.session_state.page = 2
+    st.session_state.page = 0
 
+
+if st.session_state.get("is_example", False):
+    st.success(
+        "Example profile loaded! We've prefilled the **Savings Profile** "
+        "and **Criterias-Priority Survey** for you.\n\n"
+        "Feel free to adjust any values to better match your personal situation."
+    )
 
 _, ex_col, _ = st.columns([2, 3, 2])
 with ex_col:
